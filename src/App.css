@@ -1,0 +1,545 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.App {
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(145deg, #b58863, #a06a4d);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(145deg, #a06a4d, #8b6f47);
+}
+
+/* 전역 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* 페이지 전환 애니메이션 */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s ease-out;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease-in;
+}
+
+/* 공통 버튼 스타일 */
+button {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 로딩 스피너 */
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(181, 136, 99, 0.3);
+  border-top-color: #b58863;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 공통 카드 스타일 */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 12px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* 섹션 구분선 */
+.section-divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #b58863, transparent);
+  margin: 40px 0;
+}
+
+/* 뱃지 스타일 */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: linear-gradient(145deg, #b58863, #a06a4d);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 툴팁 스타일 */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background: #2c3e50;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip:hover::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+  z-index: 1000;
+  margin-bottom: 2px;
+}
+
+/* ========================================
+   삭제 확인 모달 - 새로운 디자인
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 62, 80, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.delete-modal-content {
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
+  border-radius: 28px;
+  padding: 0;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 
+    0 25px 70px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(181, 136, 99, 0.3);
+  animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+/* 상단 아이콘 영역 */
+.modal-icon-section {
+  background: linear-gradient(135deg, #f0d9b5, #e8c9a5);
+  padding: 40px 20px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-icon-section::before {
+  content: "♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  font-size: 1.2rem;
+  color: rgba(139, 111, 71, 0.1);
+  letter-spacing: 12px;
+}
+
+.modal-icon-circle {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 8px 20px rgba(231, 76, 60, 0.4),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.2),
+    inset 0 3px 0 rgba(255, 255, 255, 0.2);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.modal-icon {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* 제목 */
+.delete-modal-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin: 24px 0 20px;
+  padding: 0 32px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* 메시지 박스 */
+.modal-message-box {
+  padding: 0 32px;
+  margin-bottom: 20px;
+}
+
+.modal-message-text {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 16px;
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.modal-replay-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(145deg, #f0d9b5, #e8c9a5);
+  padding: 16px 24px;
+  border-radius: 14px;
+  border: 2px solid #b58863;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-replay-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.modal-replay-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* 경고 박스 */
+.modal-warning-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(145deg, rgba(255, 152, 0, 0.12), rgba(255, 152, 0, 0.06));
+  padding: 14px 24px;
+  margin: 0 32px 28px;
+  border-radius: 10px;
+  border-left: 4px solid #ff9800;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.15);
+}
+
+.warning-icon {
+  font-size: 1.3rem;
+}
+
+.warning-text {
+  font-size: 0.95rem;
+  color: #d35400;
+  font-weight: 700;
+}
+
+/* 버튼 영역 */
+.delete-modal-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 0 32px 32px;
+}
+
+.delete-modal-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  padding: 16px 24px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 700;
+  box-shadow: 
+    0 6px 14px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.btn-text {
+  letter-spacing: 0.5px;
+}
+
+/* 취소 버튼 */
+.cancel-btn {
+  background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.cancel-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.cancel-btn:hover::before {
+  left: 100%;
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(145deg, #a5b5b6, #8f9c9d);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 10px 24px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.cancel-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.2),
+    inset 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 삭제 버튼 */
+.confirm-btn {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.confirm-btn:hover::before {
+  left: 100%;
+}
+
+.confirm-btn:hover {
+  background: linear-gradient(145deg, #ff5c4c, #d0493b);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 10px 24px rgba(231, 76, 60, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.confirm-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 4px 10px rgba(231, 76, 60, 0.4),
+    inset 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .delete-modal-content {
+    max-width: 90%;
+  }
+  
+  .modal-icon-section {
+    padding: 32px 20px 24px;
+  }
+  
+  .modal-icon-circle {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .modal-icon {
+    font-size: 2.8rem;
+  }
+  
+  .delete-modal-title {
+    font-size: 1.5rem;
+    margin: 20px 0 16px;
+    padding: 0 24px;
+  }
+  
+  .modal-message-box {
+    padding: 0 24px;
+  }
+  
+  .modal-message-text {
+    font-size: 1rem;
+  }
+  
+  .modal-replay-title {
+    font-size: 1.05rem;
+  }
+  
+  .modal-warning-box {
+    margin: 0 24px 24px;
+    padding: 12px 18px;
+  }
+  
+  .warning-text {
+    font-size: 0.9rem;
+  }
+  
+  .delete-modal-buttons {
+    flex-direction: column;
+    padding: 0 24px 24px;
+    gap: 10px;
+  }
+  
+  .delete-modal-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 14px 20px;
+  }
+}
